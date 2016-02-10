@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GymkanaApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="drawer_open">open</string>
+    <string name="drawer_close">close</string>
+
+    <!-- Mensajes -->
+    <string name="compass_title">Bienvenido a la Brújula por voz</string>
+    <string name="compass_info">El orden correcto para solicitar la dirección es en primer lugar la dirección y a continuación el margen de error.</string>
+    <string name="compass_message">Presiona el botón para comenzar</string>
+    <string name="compass_speak_message">Diga, dirección y a continuación margen…</string>
+    <string name="compass_error">Lo sentimos pero no hemos podido entender la dirección solicitada.\n
+        Recuerda que primero debes de pronunciar la dirección y a continuación el margen.</string>
+
+    <!-- Direcciones -->
+    <string name="compass_north">norte</string>
+    <string name="compass_north_east">noroeste</string>
+    <string name="compass_north_west">noreste</string>
+    <string name="compass_south">sur</string>
+    <string name="compass_south_east">sureste</string>
+    <string name="compass_south_west">suroeste</string>
+    <string name="compass_east">este</string>
+    <string name="compass_west">oeste</string>
+</resources>
