@@ -50,7 +50,7 @@ public class VoiceRecognitionFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        
+
         //Floating Action Button
         FloatingActionButton btnFab = (FloatingActionButton) view.findViewById(R.id.float_button);
         btnFab.setOnClickListener(new View.OnClickListener() {
@@ -87,8 +87,9 @@ public class VoiceRecognitionFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         boolean correcto = true;
+        View view = getView();
 
-        if (requestCode == ASR_CODE && resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == ASR_CODE && resultCode == Activity.RESULT_OK && data != null && view != null) {
             ArrayList<String> palabras = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             String[] listaPalabras = palabras.get(0).split(" ");
 
@@ -121,7 +122,7 @@ public class VoiceRecognitionFragment extends Fragment {
                     break;
                 default:
                     correcto = false;
-                    Snackbar.make(getView(), R.string.compass_error, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(view, R.string.compass_error, Snackbar.LENGTH_LONG).show();
             }
 
             try {
@@ -130,12 +131,12 @@ public class VoiceRecognitionFragment extends Fragment {
                     error = Integer.parseInt(listaPalabras[1]);
                 } else {
                     correcto = false;
-                    Snackbar.make(getView(), R.string.compass_error, Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(view, R.string.compass_error, Snackbar.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
                 Log.d(TAG, "Error conversion int");
                 correcto = false;
-                Snackbar.make(getView(), R.string.compass_error, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, R.string.compass_error, Snackbar.LENGTH_LONG).show();
             }
 
             if (correcto) {
@@ -143,7 +144,8 @@ public class VoiceRecognitionFragment extends Fragment {
             }
         } else {
             Log.d(TAG, "No se pudo reconocer el texto");
-            Snackbar.make(getView(), R.string.compass_error, Snackbar.LENGTH_LONG).show();
+            if (view != null)
+                Snackbar.make(view, R.string.compass_error, Snackbar.LENGTH_LONG).show();
         }
     }
 }
