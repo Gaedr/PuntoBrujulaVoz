@@ -18,6 +18,7 @@ package es.gaedr_space.puntobrujulavoz;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.FloatingActionButton;
@@ -147,5 +148,24 @@ public class VoiceRecognitionFragment extends Fragment {
             if (view != null)
                 Snackbar.make(view, R.string.compass_error, Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    public static Fragment newInstance() {
+        return new VoiceRecognitionFragment();
+    }
+
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
     }
 }

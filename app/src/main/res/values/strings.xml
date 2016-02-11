@@ -12,6 +12,8 @@
     <string name="compass_speak_message">Diga, dirección y a continuación margen…</string>
     <string name="compass_error">Lo sentimos pero no hemos podido entender la dirección solicitada.\n
         Recuerda que primero debes de pronunciar la dirección y a continuación el margen.</string>
+    <string name="compass_found_it">¡Has encontrado el punto!</string>
+    <string name="message_ok">Ok</string>
 
     <!-- Direcciones -->
     <string name="compass_north">norte</string>

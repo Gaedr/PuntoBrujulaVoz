@@ -1,6 +1,10 @@
 package es.gaedr_space.puntobrujulavoz;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -8,6 +12,8 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +25,7 @@ import android.widget.TextView;
 public class CompassFragment extends Fragment implements SensorEventListener {
     private OnFragmentInteractionListener mListener;
 
+    private static final String TAG = CompassFragment.class.getSimpleName();
     public static final String CARDINAL_POINT = "CARDINAL_POINT";
     public static final String MARGIN = "MARGIN";
 
@@ -68,30 +75,39 @@ public class CompassFragment extends Fragment implements SensorEventListener {
             errorMargin = getArguments().getInt(MARGIN);
         }
 
-        this.mSensorManager = (SensorManager) getActivity().getSystemService(getActivity().SENSOR_SERVICE);
+        mSensorManager = (SensorManager) getActivity().getSystemService(Activity.SENSOR_SERVICE);
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         mGeomagnetic = null;
         mGravity = null;
-
-        compassImage = (ImageView) getActivity().findViewById(R.id.compass_image);
-        tvDirection = (TextView) getActivity().findViewById(R.id.direction_text);
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_compass, container, false);
+        View view = inflater.inflate(R.layout.fragment_compass, container, false);
+        compassImage = (ImageView) view.findViewById(R.id.compass_image);
+        tvDirection = (TextView) view.findViewById(R.id.direction_text);
+
+        return view;
+    }
+
+    private float transformDegrees(float d) {
+        d *= (180 / (float) Math.PI);
+        if (d < 0) {
+            d += 360;
+        }
+        return Math.round(d);
     }
 
 
     public boolean correctDirection(CardinalPoint cp, float angle) {
-        float inf = angle * (1.0f - this.errorMargin);
-        float sup = angle * (1.0f + this.errorMargin);
-        return cp.getAngle() >= inf && cp.getAngle() <= sup;
+        float inf = angle - errorMargin;
+        if (inf < 0) inf += 360;
+        float sup = (angle + this.errorMargin) % 360;
+        Log.d(TAG, "Error inf: " + inf + "|| Error sup: " + sup);
+        return cp.getAngle() >= inf % 360 && cp.getAngle() <= sup % 360;
     }
 
     @Override
@@ -113,30 +129,49 @@ public class CompassFragment extends Fragment implements SensorEventListener {
             if (success) {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(RotationMatrix, orientation);
+                degree = transformDegrees(orientation[0]);
                 azimut = orientation[0] * (180 / (float) Math.PI);
             }
         }
-        degree = azimut;
-        tvDirection.setText("Angle: " + Float.toString(degree) + " degrees");
-        // se crea la animacion de la rottacion (se revierte el giro en grados, negativo)
+        String text = cardinalPoint + " || " + Float.toString(degree);
+        //text = cardinalPoint.toString();
+        tvDirection.setText(text);
+        // se crea la animacion de la rotacion (se revierte el giro en grados, negativo)
         RotateAnimation ra = new RotateAnimation(
                 currentDegree,
-                degree,
+                azimut,
                 Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF,
-                0.5f);
+                Animation.RELATIVE_TO_SELF, 0.5f
+        );
         // el tiempo durante el cual la animación se llevará a cabo
         ra.setDuration(1000);
         // establecer la animación después del final de la estado de reserva
         ra.setFillAfter(true);
         // Inicio de la animacion
         compassImage.startAnimation(ra);
-        currentDegree = -degree;
+        currentDegree = -azimut;
+        Log.d(TAG, "CurrentDegree: " + degree);
 
-        if (!directionFound) {
-            if (correctDirection(cardinalPoint, currentDegree)) {
+        if (!directionFound && degree != 0.0 && correctDirection(cardinalPoint, degree)) {
+            directionFound = true;
+            DialogFragment dialog = new DialogFragment() {
+                @Override
+                public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-            }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                    builder.setMessage(getString(R.string.compass_found_it));
+
+                    builder.setPositiveButton(R.string.message_ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+
+                    return builder.create();
+                }
+            };
+            dialog.show(getActivity().getFragmentManager(), "dialog");
         }
     }
 
