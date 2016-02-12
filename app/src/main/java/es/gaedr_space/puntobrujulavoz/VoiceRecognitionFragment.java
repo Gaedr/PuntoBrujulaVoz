@@ -1,17 +1,17 @@
 /*
- *  Copyright (C) 2016 - Samuel Peregrina Morillas <gaedr0@gmail.com>, Nieves V. Velásquez Díaz <chibi.pawn@gmail.com>
+ * Copyright (c) 2016. Samuel Peregrina Morillas <gaedr0@gmail.com>, Nieves V. Velásquez Díaz <chibi.pawn@gmail.com>
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package es.gaedr_space.puntobrujulavoz;
@@ -31,6 +31,11 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+/**
+ * Fragment que contiene la pantalla de reconocimiento del habla
+ *
+ * @author gaedr
+ */
 public class VoiceRecognitionFragment extends Fragment {
     private final static int DEFAULT_NUMBER_RESULTS = 10;
     private final static String DEFAULT_LANG_MODEL = RecognizerIntent.LANGUAGE_MODEL_FREE_FORM;
@@ -40,7 +45,19 @@ public class VoiceRecognitionFragment extends Fragment {
     private CardinalPoint cardinalPoint;
     private int error = 0;
 
+    /**
+     * Constructor por defecto del fragment
+     */
     public VoiceRecognitionFragment() {
+    }
+
+    /**
+     * Método factoria de un nuevo fragmento de la clase
+     *
+     * @return un nuevo fragmento VoiceRecognitionFragment
+     */
+    public static VoiceRecognitionFragment newInstance() {
+        return new VoiceRecognitionFragment();
     }
 
     @Override
@@ -52,7 +69,6 @@ public class VoiceRecognitionFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Floating Action Button
         FloatingActionButton btnFab = (FloatingActionButton) view.findViewById(R.id.float_button);
         btnFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,28 +78,40 @@ public class VoiceRecognitionFragment extends Fragment {
         });
     }
 
+    /**
+     * Método que lanzará la actividad de reconocimiento del habla
+     */
     private void listen() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
-        // Specify language model
+        // Especifíca el modelo de lenguaje
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, DEFAULT_LANG_MODEL);
 
-        // Specify how many results to receive
+        // Especifica el número de resultados a recibir
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, DEFAULT_NUMBER_RESULTS);
 
-        // Especifica un mensaje
+        // Especifica un mensaje a mostrar cuando se abra la ventana
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getText(R.string.compass_speak_message));
 
-        // Start listening
         startActivityForResult(intent, ASR_CODE);
     }
 
+    /**
+     * Método que lanza el fragmento que muestra la brújula
+     */
     private void showCompass() {
         getFragmentManager().beginTransaction()
                 .replace(this.getId(), CompassFragment.newInstance(cardinalPoint, error))
                 .commit();
     }
 
+    /**
+     * Listener que obtiene los resultados de un activity
+     *
+     * @param requestCode que contiene el estado devuelto por la activity
+     * @param resultCode  código que devolverá la aplicación cuando finalice
+     * @param data        contenidos que nos devolverá el activity que lanzó el evento
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -150,17 +178,12 @@ public class VoiceRecognitionFragment extends Fragment {
         }
     }
 
-    public static Fragment newInstance() {
-        return new VoiceRecognitionFragment();
-    }
-
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.

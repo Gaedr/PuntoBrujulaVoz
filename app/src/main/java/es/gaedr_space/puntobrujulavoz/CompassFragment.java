@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016. Samuel Peregrina Morillas <gaedr0@gmail.com>, Nieves V. Velásquez Díaz <chibi.pawn@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package es.gaedr_space.puntobrujulavoz;
 
 import android.app.Activity;
@@ -22,6 +38,11 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * Fragmento que contiene a la brújula y su funcionalidad
+ *
+ * @author gaedr
+ */
 public class CompassFragment extends Fragment implements SensorEventListener {
     private OnFragmentInteractionListener mListener;
 
@@ -40,11 +61,8 @@ public class CompassFragment extends Fragment implements SensorEventListener {
     private Sensor accelerometer;
     private Sensor magnetometer;
 
-    // Guarda el valor del azimut
     float azimut;
-    // Guarda los valores que cambián con las variaciones del sensor TYPE_ACCELEROMETER
     float[] mGravity;
-    // Guarda los valores que cambián con las variaciones del sensor TYPE_MAGNETIC_FIELD
     float[] mGeomagnetic;
 
     public CompassFragment() {
@@ -67,6 +85,12 @@ public class CompassFragment extends Fragment implements SensorEventListener {
         return fragment;
     }
 
+    /**
+     * Método que se lanzará tras la creación del fragmento
+     *
+     * @param savedInstanceState Bundle que contiene los objetos enviados en la creación
+     * @see Fragment
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +109,6 @@ public class CompassFragment extends Fragment implements SensorEventListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_compass, container, false);
         compassImage = (ImageView) view.findViewById(R.id.compass_image);
         tvDirection = (TextView) view.findViewById(R.id.direction_text);
@@ -93,6 +116,12 @@ public class CompassFragment extends Fragment implements SensorEventListener {
         return view;
     }
 
+    /**
+     * Método que transforma los resultados dados entre -3 y 3 a los grados de 0 a 360
+     *
+     * @param d flotante que devuelve el SensorManager
+     * @return El float correspondiente entre 0 y 360
+     */
     private float transformDegrees(float d) {
         d *= (180 / (float) Math.PI);
         if (d < 0) {
@@ -101,15 +130,27 @@ public class CompassFragment extends Fragment implements SensorEventListener {
         return Math.round(d);
     }
 
-
+    /**
+     * Método que comprueba si el angulo recibido está en el punto cardinal dado
+     *
+     * @param cp    CardinalPoint comprobar
+     * @param angle Ángulo que queremos comprobar
+     * @return true si estamos en la dirección correcta, false si no lo estamos
+     */
     public boolean correctDirection(CardinalPoint cp, float angle) {
         float inf = angle - errorMargin;
         if (inf < 0) inf += 360;
+
         float sup = (angle + this.errorMargin) % 360;
-        Log.d(TAG, "Error inf: " + inf + "|| Error sup: " + sup);
+
         return cp.getAngle() >= inf % 360 && cp.getAngle() <= sup % 360;
     }
 
+    /**
+     * Listener que se lanza cada vez que varía el sensor
+     *
+     * @param event que contiene los datos del sensor
+     */
     @Override
     public void onSensorChanged(SensorEvent event) {
 
@@ -219,7 +260,7 @@ public class CompassFragment extends Fragment implements SensorEventListener {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
+     * <p>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
