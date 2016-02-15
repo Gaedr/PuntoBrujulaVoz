@@ -24,7 +24,7 @@ Las clases usadas durante la realización de esta práctica han sido:
 
 * **MainActivity:** esta clase contiene los dos fragments anteriores y se encarga de inicializarlos para dar comienzo a la aplicación.
 
-###Metodos
+###Métodos
 * Los métodos a destacar en la clase **CompassFragment** son:
 	* **transformDegrees:** método que transforma las coordenadas dadas por los sensores a las coordenadas habituales usadas de 0 a 360.
 	* **correctDirection:** método que comprueba si el grado actual de dirección en el que nos encontramos pertenece al que estamos buscando usando el margen de error dado
@@ -34,7 +34,7 @@ Las clases usadas durante la realización de esta práctica han sido:
 	* **showCompass:**  este método es sustituye la pantalla actual por la brújula
 	* **onActivityResult:** método que captura los eventos de los activities lanzados por el *activityOnResult* y que se encargará en este caso de recibir los resultados del reconocedor de voz.
 
-##Bibliografia
+##Bibliografía
 * [iconmonstr](http://iconmonstr.com/): librería de imagenes con licencia GNU
 * [CompassApp](https://github.com/agamboadev/CompassApp/blob/master/CompassApp/src/com/example/compassapp/MainActivity.java): Ejemplo de brújula que utiliza varios sensores para la posición
 * [Tutorial: Simple Reconocimiento de voz en Android (speech recognition)](http://www.tutorialeshtml5.com/2013/03/tutorial-simple-reconocimiento-de-voz.html)
